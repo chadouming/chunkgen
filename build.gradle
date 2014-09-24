@@ -11,18 +11,18 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
     }
 }
 
 apply plugin: 'forge'
 
-version = "1.7.10-1.0"
+version = "1.6.4.10-1.0"
 group= "com.gecgooden.chunkgen" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "chunkgen"
 
 minecraft {
-    version = "1.7.10-10.13.0.1180"
+    version = "1.6.4-9.11.1.964"
     assetDir = "eclipse/assets"
 }
 

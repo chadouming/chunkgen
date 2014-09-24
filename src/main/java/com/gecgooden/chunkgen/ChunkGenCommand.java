@@ -3,15 +3,12 @@ package com.gecgooden.chunkgen;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderServer;
 
@@ -54,9 +51,10 @@ public class ChunkGenCommand implements ICommand
 	public void processCommand(ICommandSender icommandsender, String[] astring)
 	{
 		if(!icommandsender.canCommandSenderUseCommand(getRequiredPermissionLevel(), this.getCommandName())) {
-			ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
-			MinecraftServer.getServer().addChatMessage(chatTranslation);
-			icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+			icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.generic.permission"));
+//			ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
+//			MinecraftServer.getServer().addChatMessage(chatTranslation);
+//			icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
 		} else {
 			int playerX = 0;
 			int playerY = 0;
@@ -105,19 +103,22 @@ public class ChunkGenCommand implements ICommand
 				for(Chunk c : chunks) {
 					cps.unloadChunksIfNotNearSpawn(c.xPosition, c.zPosition);
 				}
-				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.successful");
-				MinecraftServer.getServer().addChatMessage(chatTranslation);
-				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+//				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.successful");
+//				MinecraftServer.getServer().addChatMessage(chatTranslation);
+//				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+				icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.successful"));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.numberFormatException");
-				MinecraftServer.getServer().addChatMessage(chatTranslation);
-				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+//				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.numberFormatException");
+//				MinecraftServer.getServer().addChatMessage(chatTranslation);
+//				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+				icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.numberFormatException"));
 			} catch (Exception e) {
 				e.printStackTrace();
-				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.failed");
-				MinecraftServer.getServer().addChatMessage(chatTranslation);
-				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+//				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.failed");
+//				MinecraftServer.getServer().addChatMessage(chatTranslation);
+//				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+				icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.failed"));
 			}
 			
 		}

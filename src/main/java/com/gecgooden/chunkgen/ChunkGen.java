@@ -1,12 +1,10 @@
 package com.gecgooden.chunkgen;
 
-import java.util.Map;
-
+import net.minecraft.network.INetworkManager;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkCheckHandler;
-import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.common.network.NetworkMod.VersionCheckHandler;
 
 @Mod(modid = ChunkGen.MODID, version = ChunkGen.VERSION)
 public class ChunkGen
@@ -20,8 +18,8 @@ public class ChunkGen
      * @param side
      * @return Always true.
      */
-    @NetworkCheckHandler
-    public boolean networkCheckHandler(Map<String, String> map, Side side) { 
+    @VersionCheckHandler
+    public boolean networkCheckHandler(String string, INetworkManager networkManager) { 
     	return true;
     }
     
