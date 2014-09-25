@@ -3,6 +3,8 @@ package com.gecgooden.chunkgen;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.resources.Language;
+import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,10 +53,7 @@ public class ChunkGenCommand implements ICommand
 	public void processCommand(ICommandSender icommandsender, String[] astring)
 	{
 		if(!icommandsender.canCommandSenderUseCommand(getRequiredPermissionLevel(), this.getCommandName())) {
-			icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.generic.permission"));
-//			ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
-//			MinecraftServer.getServer().addChatMessage(chatTranslation);
-//			icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+			icommandsender.sendChatToPlayer(new ChatMessageComponent().createFromTranslationKey("commands.generic.permission"));
 		} else {
 			int playerX = 0;
 			int playerY = 0;
@@ -103,22 +102,13 @@ public class ChunkGenCommand implements ICommand
 				for(Chunk c : chunks) {
 					cps.unloadChunksIfNotNearSpawn(c.xPosition, c.zPosition);
 				}
-//				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.successful");
-//				MinecraftServer.getServer().addChatMessage(chatTranslation);
-//				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
-				icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.successful"));
+				icommandsender.sendChatToPlayer(new ChatMessageComponent().createFromTranslationKey("commands.successful"));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-//				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.numberFormatException");
-//				MinecraftServer.getServer().addChatMessage(chatTranslation);
-//				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
-				icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.numberFormatException"));
+				icommandsender.sendChatToPlayer(new ChatMessageComponent().createFromTranslationKey("commands.numberFormatException"));
 			} catch (Exception e) {
 				e.printStackTrace();
-//				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.failed");
-//				MinecraftServer.getServer().addChatMessage(chatTranslation);
-//				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
-				icommandsender.sendChatToPlayer(new ChatMessageComponent().addText("commands.failed"));
+				icommandsender.sendChatToPlayer(new ChatMessageComponent().createFromTranslationKey("commands.failed"));
 			}
 			
 		}
