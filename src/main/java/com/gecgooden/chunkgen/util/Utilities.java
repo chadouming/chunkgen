@@ -1,17 +1,11 @@
 package com.gecgooden.chunkgen.util;
 
 import com.gecgooden.chunkgen.reference.Reference;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.RegionFileCache;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Utilities {
 
@@ -45,14 +39,31 @@ public class Utilities {
 
 		if(!chunksExist(x, z, dimensionID)) {
 			// Load the desired chunk
-			cps.provideChunk(x, z);
+			cps.loadChunk(x, z);
 			// Mark the chunk for unload
 			cps.dropChunk(x, z);
 			// Display info about the created chunk
 			Reference.logger.info("Chunk created at x=" + x + " and z=" + z);
 		}
 	}
-
+	
+	public static void queueChunkGen(int x0, int z0, int height, int width, int dimID){
+		Reference.x = x0;
+		Reference.z = z0;
+		Reference.height = height;
+		Reference.width = width;
+		Reference.dimID = dimID;
+			    
+		Reference.startX = (Reference.x - Reference.width/2);
+		Reference.startZ = (Reference.z - Reference.height/2);
+		Reference.stopX = (Reference.x + Reference.width/2);
+		Reference.stopZ = (Reference.z + Reference.height/2);
+		
+		Reference.toGenerate = true;
+		
+		Reference.logger.info("Chunk generation queued");
+	}
+/*
 	public static void queueChunkGeneration(ICommandSender icommandsender, int skipChunks, int x0, int z0, int height, int width, int dimensionID) {
 		int x = 0, z = 0, dx = 0, dy = -1;
 		int t = Math.max(height, width);
@@ -81,5 +92,5 @@ public class Utilities {
 		}
 
 		Reference.startingSize = Reference.toGenerate.size();
-	}
+	}*/
 }

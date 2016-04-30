@@ -20,8 +20,24 @@ public class TickHandler {
 
 		final World world = MinecraftServer.getServer().getEntityWorld();
 		if (Reference.pauseForPlayers && world.playerEntities.size() > 0) return;
+		
+		if(Reference.toGenerate){
+			for(char i = 0; i < Reference.numChunksPerTick; i++){
+				if(Reference.startX < Reference.stopX){
+					if(Reference.startZ < Reference.stopZ){
+						Utilities.generateChunk(Reference.startX, Reference.startZ, Reference.dimID);
+						Reference.startX++;
+					} else 
+						Reference.toGenerate = false;
+				} else {
+					Reference.startZ++;
+					Reference.startX = (Reference.x - Reference.width/2); 
+				}
+			}
+			Reference.logger.info("Generated chunk batch at StartX:"+Reference.startX+" StartZ"+Reference.startZ+" StopX"+Reference.stopX+" stopZ"+Reference.stopZ);
+		}
 
-		if(Reference.toGenerate != null && !Reference.toGenerate.isEmpty()) {
+		/*if(Reference.toGenerate != null && !Reference.toGenerate.isEmpty()) {
 			chunkQueue += Reference.numChunksPerTick;
 			while (chunkQueue > 1) {
 				chunkQueue--;
@@ -47,7 +63,7 @@ public class TickHandler {
 				}
 				Reference.skipChunks++;
 			}
-		}
+		}*/
 	}
 
 }

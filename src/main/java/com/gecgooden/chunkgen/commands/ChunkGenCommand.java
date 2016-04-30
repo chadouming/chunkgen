@@ -73,7 +73,7 @@ public class ChunkGenCommand implements ICommand
 				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
 			}
 			else if(astring[0].equalsIgnoreCase("stop")) {
-				Reference.toGenerate.clear();
+				Reference.toGenerate = false;
 				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.stopped");
 				MinecraftServer.getServer().addChatMessage(chatTranslation);
 				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
@@ -98,8 +98,9 @@ public class ChunkGenCommand implements ICommand
 					if(astring.length == 5) {
 						dimensionID = Integer.parseInt(astring[4]);
 					}
-
-					Utilities.queueChunkGeneration(icommandsender, 0, x, z, height, width, dimensionID);
+					Reference.dimID = dimensionID;
+					
+					Utilities.queueChunkGen( x, z, height, width, dimensionID);
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 					ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.numberFormatException");
