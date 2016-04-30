@@ -1,10 +1,10 @@
 package com.gecgooden.chunkgen.reference;
 
-import com.gecgooden.chunkgen.util.ChunkPosition;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.command.ICommandSender;
+
 import java.text.DecimalFormat;
-import java.util.Queue;
 
 public class Reference {
     public static Integer x;
@@ -13,17 +13,25 @@ public class Reference {
     public static Integer width;
     public static double numChunksPerTick;
     public static boolean pauseForPlayers;
-
+    public static int perCentDelay;    
+    public static boolean debug;
+    
     public static final String MOD_ID = "chunkgen";
-    public static final String VERSION = "1.7.10-1.2.2";
+    public static final String VERSION = "1.8.9-1.3.1";
     public static final String GUI_FACTORY = "com.gecgooden.chunkgen.client.gui.GuiFactory";
 
-    public static Queue<ChunkPosition> toGenerate;
-    public static int startingSize;
-    public static int updateDelay;
+    public static boolean toGenerate;
+    public static int dimID;
 
     public static DecimalFormat decimalFormat;
 
     public static Logger logger;
-    public static int skipChunks;
+    public static ICommandSender icomSender;
+    
+	public static int startX;
+	public static int startZ;
+	public static int stopX;
+	public static int stopZ;
+	public static double totalToGen;
+	public static long totalGenerated;
 }

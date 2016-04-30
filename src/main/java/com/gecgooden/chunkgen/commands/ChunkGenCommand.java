@@ -1,5 +1,6 @@
 package com.gecgooden.chunkgen.commands;
 
+import com.gecgooden.chunkgen.handlers.ConfigurationHandler;
 import com.gecgooden.chunkgen.reference.Reference;
 import com.gecgooden.chunkgen.util.Utilities;
 import net.minecraft.command.ICommand;
@@ -58,13 +59,11 @@ public class ChunkGenCommand implements ICommand
 			icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
 		} else {
 			int playerX = 0;
-			int playerY = 0;
 			int playerZ = 0;
 			if(!icommandsender.getName().equalsIgnoreCase("Rcon")) {
-				EntityPlayer ep = MinecraftServer.getServer().worldServerForDimension(0).getPlayerEntityByName(icommandsender.getName());
+				MinecraftServer.getServer().worldServerForDimension(0).getPlayerEntityByName(icommandsender.getName());
 				BlockPos blockPos = icommandsender.getPosition();
 				playerX = blockPos.getX();
-				playerY = blockPos.getY();
 				playerZ = blockPos.getZ();
 			}
 			if(astring.length == 0 || astring[0].equalsIgnoreCase("help")) {
@@ -73,7 +72,8 @@ public class ChunkGenCommand implements ICommand
 				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
 			}
 			else if(astring[0].equalsIgnoreCase("stop")) {
-				Reference.toGenerate.clear();
+				Reference.toGenerate = false;
+				ConfigurationHandler.updateConfigs();
 				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.stopped");
 				MinecraftServer.getServer().addChatMessage(chatTranslation);
 				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
@@ -98,8 +98,22 @@ public class ChunkGenCommand implements ICommand
 					if(astring.length == 5) {
 						dimensionID = Integer.parseInt(astring[4]);
 					}
-
-					Utilities.queueChunkGeneration(icommandsender, 0, x, z, height, width, dimensionID);
+					Reference.dimID = dimensionID;
+					
+					Utilities.queueChunkGen( x, z, height, width, dimensionID, icommandsender);
+					
+					ConfigurationHandler.updateConfigs();
+					ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.start");
+					MinecraftServer.getServer().addChatMessage(chatTranslation);
+					icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+					
+					//informs the user that generation will start when everyone is offline.
+					if(Reference.pauseForPlayers){
+						ChatComponentTranslation chatTranslation2 = new ChatComponentTranslation("commands.wait");
+						MinecraftServer.getServer().addChatMessage(chatTranslation2);
+						icommandsender.addChatMessage(new ChatComponentText(chatTranslation2.getUnformattedTextForChat()));
+					}
+					
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 					ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.numberFormatException");

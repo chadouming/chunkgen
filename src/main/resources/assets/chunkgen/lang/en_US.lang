@@ -3,3 +3,5 @@ commands.successful=Chunk Generation Completed!
 commands.failed=Chunk Generation Failed!
 commands.numberFormatException=One of the passed arguments wasn't a number!
 commands.stopped=Chunk Generation Stopped
+commands.start=Chunk Generation Queued
+commands.wait=Generation will start when no one is online.

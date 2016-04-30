@@ -1,53 +1,42 @@
 package com.gecgooden.chunkgen.handlers;
 
 import com.gecgooden.chunkgen.reference.Reference;
-import com.gecgooden.chunkgen.util.ChunkPosition;
 import com.gecgooden.chunkgen.util.Utilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class TickHandler {
 
-	private double chunkQueue = 0;
-	private int chunksGenerated = 0;
-
 	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event) {
 
 		final World world = MinecraftServer.getServer().getEntityWorld();
 		if (Reference.pauseForPlayers && world.playerEntities.size() > 0) return;
-
-		if(Reference.toGenerate != null && !Reference.toGenerate.isEmpty()) {
-			chunkQueue += Reference.numChunksPerTick;
-			while (chunkQueue > 1) {
-				chunkQueue--;
-				chunksGenerated++;
-				ChunkPosition cp = Reference.toGenerate.poll();
-				if(cp != null) {
-					Utilities.generateChunk(cp.getX(), cp.getZ(), cp.getDimensionID());
-					if(chunksGenerated % Reference.updateDelay == 0) {
-						float completedPercentage = 1 - (float)Reference.toGenerate.size()/(float)Reference.startingSize;
-						Reference.logger.info("percentage: " + completedPercentage);
-						ChatComponentTranslation chatTranslation = new ChatComponentTranslation("");
-						MinecraftServer.getServer().addChatMessage(chatTranslation);
-
-						cp.getICommandSender().addChatMessage(new ChatComponentText("Chunkgen: " + (int)(completedPercentage * 100) + "% completed"));
-
-						ConfigurationHandler.UpdateSkipChunks();
+		
+		if(Reference.toGenerate){
+			for(char i = 0; i < Reference.numChunksPerTick; i++){
+				if(Reference.startX < Reference.stopX){
+					if(Reference.startZ < Reference.stopZ){
+						Utilities.generateChunk(Reference.startX, Reference.startZ, Reference.dimID);
+						Reference.startX++;
+					} else {
+						Reference.toGenerate = false;
+						ConfigurationHandler.updateConfigs();
 					}
-					if(Reference.toGenerate.peek() == null) {
-						ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.successful");
-						MinecraftServer.getServer().addChatMessage(chatTranslation);
-						cp.getICommandSender().addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
-					}
+				} else {
+					Reference.startZ++;
+					Reference.startX = (Reference.x - Reference.width/2); 
 				}
-				Reference.skipChunks++;
 			}
+			
+			ConfigurationHandler.updateConfigs();
+
+			if(Reference.debug)
+				Reference.logger.info("Generated chunk batch, "+((Reference.totalGenerated/Reference.totalToGen)*100)+"% done");
+			
 		}
 	}
-
 }
