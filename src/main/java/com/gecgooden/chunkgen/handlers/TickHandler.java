@@ -29,6 +29,7 @@ public class TickHandler {
 				}
 			}
 			Reference.logger.info("Generated chunk batch");
+			ConfigurationHandler.updateConfigs();
 			//reimplement % of completion
 		}
 	}
