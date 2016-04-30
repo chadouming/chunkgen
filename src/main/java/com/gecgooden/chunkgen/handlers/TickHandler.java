@@ -22,15 +22,20 @@ public class TickHandler {
 					if(Reference.startZ < Reference.stopZ){
 						Utilities.generateChunk(Reference.startX, Reference.startZ, Reference.dimID);
 						Reference.startX++;
-					} else 
+					} else {
 						Reference.toGenerate = false;
+						ConfigurationHandler.updateConfigs();
+					}
 				} else {
 					Reference.startZ++;
 					Reference.startX = (Reference.x - Reference.width/2); 
 				}
 			}
-			Reference.logger.info("Generated chunk batch, "+((Reference.totalGenerated/Reference.totalToGen)*100)+"% done");
+			
 			ConfigurationHandler.updateConfigs();
+
+			if(Reference.debug)
+				Reference.logger.info("Generated chunk batch, "+((Reference.totalGenerated/Reference.totalToGen)*100)+"% done");
 			
 		}
 	}

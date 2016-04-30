@@ -32,12 +32,13 @@ public class Utilities {
 		ChunkProviderServer cps = MinecraftServer.getServer().worldServerForDimension(dimensionID).theChunkProviderServer;
 
 		if(cps.getLoadedChunkCount() > 1000) {
-			Reference.logger.info("Much chunk loaded, WOW, Saving then Unloading them. AMAZING. SUCH CHUNKS.");
-
+			Reference.logger.info("Too many chunks are loaded, unloading some of them.");
+			Reference.logger.info("Chunks loaded : " + cps.getLoadedChunkCount());
+			
 			//Unload all chunks that are marked to be unloaded
 			cps.unloadQueuedChunks();
 
-			Reference.logger.info("Chunk loaded : " + cps.getLoadedChunkCount());
+			Reference.logger.info("Chunks left : " + cps.getLoadedChunkCount());
 		}
 
 		if(!chunksExist(x, z, dimensionID)) {
@@ -47,7 +48,8 @@ public class Utilities {
 			cps.dropChunk(x, z);
 			
 			// Display info about the created chunk
-			Reference.logger.info("Chunk created at x=" + x + " and z=" + z);
+			if(Reference.debug)
+				Reference.logger.info("Chunk created at x=" + x + " and z=" + z);
 		}
 		
 		//For % calculations
@@ -56,6 +58,7 @@ public class Utilities {
 		
 		//show the % of completion to the requester.
 		if((Reference.totalGenerated % Reference.perCentDelay) == 0){
+			Reference.logger.info("Generation "+((Reference.totalGenerated/Reference.totalToGen)*100)+"% completed");
 			Reference.icomSender.addChatMessage(new ChatComponentText("Chunkgen: "+(float)((Reference.totalGenerated/Reference.totalToGen)*100)+"% completed"));
 		}
 	}

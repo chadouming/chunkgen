@@ -64,7 +64,6 @@ public class ChunkGenCommand implements ICommand
 				MinecraftServer.getServer().worldServerForDimension(0).getPlayerEntityByName(icommandsender.getName());
 				BlockPos blockPos = icommandsender.getPosition();
 				playerX = blockPos.getX();
-				blockPos.getY();
 				playerZ = blockPos.getZ();
 			}
 			if(astring.length == 0 || astring[0].equalsIgnoreCase("help")) {
@@ -111,6 +110,7 @@ public class ChunkGenCommand implements ICommand
 					//informs the user that generation will start when everyone is offline.
 					if(Reference.pauseForPlayers){
 						ChatComponentTranslation chatTranslation2 = new ChatComponentTranslation("commands.wait");
+						MinecraftServer.getServer().addChatMessage(chatTranslation2);
 						icommandsender.addChatMessage(new ChatComponentText(chatTranslation2.getUnformattedTextForChat()));
 					}
 					
