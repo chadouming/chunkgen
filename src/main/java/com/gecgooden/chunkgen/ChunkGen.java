@@ -4,7 +4,6 @@ import com.gecgooden.chunkgen.commands.ChunkGenCommand;
 import com.gecgooden.chunkgen.handlers.ConfigurationHandler;
 import com.gecgooden.chunkgen.handlers.TickHandler;
 import com.gecgooden.chunkgen.reference.Reference;
-import com.gecgooden.chunkgen.util.Utilities;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -48,8 +47,6 @@ public class ChunkGen
 	{
 		event.registerServerCommand(new ChunkGenCommand());
 		Reference.toGenerate = false;
-		/*if(Reference.x != null && Reference.z != null && Reference.height != null && Reference.width != null && Reference.height > 0 && Reference.width > 0) {
-			Utilities.generateChunks(Reference.x, Reference.z, Reference.height, Reference.width, 0);
-		}*/
+		//Reimplement the autorestart (that wasn't working anyway)
 	}
 }

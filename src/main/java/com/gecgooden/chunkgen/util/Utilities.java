@@ -63,34 +63,4 @@ public class Utilities {
 		
 		Reference.logger.info("Chunk generation queued");
 	}
-/*
-	public static void queueChunkGeneration(ICommandSender icommandsender, int skipChunks, int x0, int z0, int height, int width, int dimensionID) {
-		int x = 0, z = 0, dx = 0, dy = -1;
-		int t = Math.max(height, width);
-		int maxI = t * t;
-
-		if (Reference.toGenerate == null) {
-			Reference.toGenerate = new LinkedList<ChunkPosition>();
-		}
-
-		for (int i = 0; i < maxI; i++) {
-			if ((-width / 2 <= x) && (x <= width / 2) && (-height / 2 <= z) && (z <= height / 2)) {
-				if (skipChunks > 0) {
-					skipChunks--;
-				} else {
-					Reference.toGenerate.add(new ChunkPosition(x + x0, z + z0, dimensionID, icommandsender));
-				}
-			}
-
-			if ((x == z) || ((x < 0) && (x == -z)) || ((x > 0) && (x == 1 - z))) {
-				t = dx;
-				dx = -dy;
-				dy = t;
-			}
-			x += dx;
-			z += dy;
-		}
-
-		Reference.startingSize = Reference.toGenerate.size();
-	}*/
 }

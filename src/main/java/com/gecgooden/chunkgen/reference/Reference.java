@@ -1,10 +1,8 @@
 package com.gecgooden.chunkgen.reference;
 
-import com.gecgooden.chunkgen.util.ChunkPosition;
 import org.apache.logging.log4j.Logger;
 
 import java.text.DecimalFormat;
-import java.util.Queue;
 
 public class Reference {
     public static Integer x;
@@ -20,8 +18,6 @@ public class Reference {
     public static final String GUI_FACTORY = "com.gecgooden.chunkgen.client.gui.GuiFactory";
 
     public static boolean toGenerate;
-    public static int startingSize;
-    public static int updateDelay;
     public static int dimID;
 
     public static DecimalFormat decimalFormat;

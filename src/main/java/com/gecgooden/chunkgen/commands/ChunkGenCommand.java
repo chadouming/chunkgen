@@ -58,13 +58,12 @@ public class ChunkGenCommand implements ICommand
 			icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
 		} else {
 			int playerX = 0;
-			int playerY = 0;
 			int playerZ = 0;
 			if(!icommandsender.getName().equalsIgnoreCase("Rcon")) {
-				EntityPlayer ep = MinecraftServer.getServer().worldServerForDimension(0).getPlayerEntityByName(icommandsender.getName());
+				MinecraftServer.getServer().worldServerForDimension(0).getPlayerEntityByName(icommandsender.getName());
 				BlockPos blockPos = icommandsender.getPosition();
 				playerX = blockPos.getX();
-				playerY = blockPos.getY();
+				blockPos.getY();
 				playerZ = blockPos.getZ();
 			}
 			if(astring.length == 0 || astring[0].equalsIgnoreCase("help")) {
