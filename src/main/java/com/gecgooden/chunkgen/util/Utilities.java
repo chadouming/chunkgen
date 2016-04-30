@@ -13,42 +13,43 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class Utilities {
 
 	public static void generateChunks(int x, int z, int width, int height, int dimensionID) {
-
-		ChunkProviderServer cps = MinecraftServer.getServer().worldServerForDimension(dimensionID).theChunkProviderServer;
-
-		List<Chunk> chunks = new ArrayList<Chunk>(width*height);
 		for(int i = (x - width/2); i < (x + width/2); i++) {
 			for(int j = (z - height/2); j < (z + height/2); j++) {
 				generateChunk(i, j, dimensionID);
 			}
 		}
-		for(Chunk c : chunks) {
-			cps.unloadAllChunks(); //unloadChunksIfNotNearSpawn(c.xPosition, c.zPosition);
-		}
 	}
 
 	private static boolean chunksExist(int x, int z, int dimensionID) {
 		WorldServer world = null;
-	
+
 		world = DimensionManager.getWorld(dimensionID);
-		
+
 		return RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F);
 	}
-	
+
 	public static void generateChunk(int x, int z, int dimensionID) {
 		ChunkProviderServer cps = MinecraftServer.getServer().worldServerForDimension(dimensionID).theChunkProviderServer;
-		if(!chunksExist(x, z, dimensionID)) {
-			cps.loadChunk(x, z);
 
-			cps.loadChunk(x, z+1);
-			cps.loadChunk(x+1, z);
-			cps.loadChunk(x+1, z+1);
-			
-			Reference.logger.info("Loaded Chunk at " + x + " " + z + " " + dimensionID);
+		if(cps.getLoadedChunkCount() > 1000) {
+			Reference.logger.info("Much chunk loaded, WOW, Saving then Unloading them. AMAZING. SUCH CHUNKS.");
+
+			//Unload all chunks that are marked to be unloaded
+			cps.unloadQueuedChunks();
+
+			Reference.logger.info("Chunk loaded : " + cps.getLoadedChunkCount());
+		}
+
+		if(!chunksExist(x, z, dimensionID)) {
+			// Load the desired chunk
+			cps.provideChunk(x, z);
+			// Mark the chunk for unload
+			cps.dropChunk(x, z);
+			// Display info about the created chunk
+			Reference.logger.info("Chunk created at x=" + x + " and z=" + z);
 		}
 	}
 
