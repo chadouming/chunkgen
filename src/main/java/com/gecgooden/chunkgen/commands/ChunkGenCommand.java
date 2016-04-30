@@ -1,5 +1,6 @@
 package com.gecgooden.chunkgen.commands;
 
+import com.gecgooden.chunkgen.handlers.ConfigurationHandler;
 import com.gecgooden.chunkgen.reference.Reference;
 import com.gecgooden.chunkgen.util.Utilities;
 import net.minecraft.command.ICommand;
@@ -73,6 +74,7 @@ public class ChunkGenCommand implements ICommand
 			}
 			else if(astring[0].equalsIgnoreCase("stop")) {
 				Reference.toGenerate = false;
+				ConfigurationHandler.updateConfigs();
 				ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.stopped");
 				MinecraftServer.getServer().addChatMessage(chatTranslation);
 				icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
@@ -99,7 +101,19 @@ public class ChunkGenCommand implements ICommand
 					}
 					Reference.dimID = dimensionID;
 					
-					Utilities.queueChunkGen( x, z, height, width, dimensionID);
+					Utilities.queueChunkGen( x, z, height, width, dimensionID, icommandsender);
+					
+					ConfigurationHandler.updateConfigs();
+					ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.start");
+					MinecraftServer.getServer().addChatMessage(chatTranslation);
+					icommandsender.addChatMessage(new ChatComponentText(chatTranslation.getUnformattedTextForChat()));
+					
+					//informs the user that generation will start when everyone is offline.
+					if(Reference.pauseForPlayers){
+						ChatComponentTranslation chatTranslation2 = new ChatComponentTranslation("commands.wait");
+						icommandsender.addChatMessage(new ChatComponentText(chatTranslation2.getUnformattedTextForChat()));
+					}
+					
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 					ChatComponentTranslation chatTranslation = new ChatComponentTranslation("commands.numberFormatException");

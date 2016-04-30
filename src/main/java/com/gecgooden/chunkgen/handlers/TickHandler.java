@@ -3,6 +3,7 @@ package com.gecgooden.chunkgen.handlers;
 import com.gecgooden.chunkgen.reference.Reference;
 import com.gecgooden.chunkgen.util.Utilities;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -28,9 +29,9 @@ public class TickHandler {
 					Reference.startX = (Reference.x - Reference.width/2); 
 				}
 			}
-			Reference.logger.info("Generated chunk batch");
+			Reference.logger.info("Generated chunk batch, "+((Reference.totalGenerated/Reference.totalToGen)*100)+"% done");
 			ConfigurationHandler.updateConfigs();
-			//reimplement % of completion
+			
 		}
 	}
 }
