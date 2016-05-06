@@ -1,27 +1,45 @@
 package com.gecgooden.chunkgen.util;
 
 import com.gecgooden.chunkgen.reference.Reference;
-import net.minecraft.command.ICommandSender;
+import com.gecgooden.chunkgen.ChunkGen;
+
 import net.minecraft.server.MinecraftServer;
+
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.chunk.storage.RegionFileCache;
 import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
+
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import net.minecraftforge.common.chunkio.ChunkIOExecutor;
+import net.minecraftforge.common.MinecraftForge;
 
-public class Utilities {
+public class Utilities implements Runnable {
 
-	public static void generateChunks(int x, int z, int width, int height, int dimensionID) {
-		for(int i = (x - width/2); i < (x + width/2); i++) {
-			for(int j = (z - height/2); j < (z + height/2); j++) {
-				generateChunk(i, j, dimensionID);
-			}
-		}
+	static boolean doneLoading = true;
+	//static int _x = 0;
+	//static int _z = 0;
+
+	@Override
+	public void run() {
+		ChunkProviderServer cps = MinecraftServer.getServer().worldServerForDimension(Reference.dimensionID).theChunkProviderServer;
+
+		// Increase the ammount of done chunk
+		Reference.chunkDone++;
+
+		// Request the next chunk
+		doneLoading = true;
+
+		if(Reference.verbose)
+			Reference.logger.info("Chunk done : " + Reference.chunkDone);
 	}
+
 
 	private static boolean chunksExist(int x, int z, int dimensionID) {
 		WorldServer world = null;
@@ -31,55 +49,50 @@ public class Utilities {
 		return RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F);
 	}
 
-	public static void generateChunk(int x, int z, int dimensionID) {
-		ChunkProviderServer cps = MinecraftServer.getServer().worldServerForDimension(dimensionID).theChunkProviderServer;
+	public static void generateChunks(int x, int z, int dimensionID, int width, int height, int chunkToGenerate) {
+		if(doneLoading) {
+			for(int i = (x - width/2) + Reference.backX; i <= (x + width/2); i++) {
+				for(int j = (z - height/2) + Reference.backZ; j <= (z + height/2); j++) {
+					generateChunk(i, j, dimensionID);
+//					_z = i; _x = j;
+					Reference.chunkLeft--;
+                                	Reference.backZ++;
 
-		if(cps.getLoadedChunkCount() > 1000) {
-			Reference.logger.info("Much chunk loaded, WOW, Saving then Unloading them. AMAZING. SUCH CHUNKS.");
-
-			//Unload all chunks that are marked to be unloaded
-			cps.unloadQueuedChunks();
-
-			Reference.logger.info("Chunk loaded : " + cps.getLoadedChunkCount());
-		}
-
-		if(!chunksExist(x, z, dimensionID)) {
-			// Load the desired chunk
-			cps.provideChunk(x, z);
-			// Mark the chunk for unload
-			cps.dropChunk(x, z);
-			// Display info about the created chunk
-			Reference.logger.info("Chunk created at x=" + x + " and z=" + z);
+					if((Reference.chunkLeft % chunkToGenerate) == 0)
+                                        	return;
+				}
+				Reference.backZ = 0;
+				Reference.backX++;
+			}
+			Reference.toGenerate = false;
 		}
 	}
 
-	public static void queueChunkGeneration(ICommandSender icommandsender, int skipChunks, int x0, int z0, int height, int width, int dimensionID) {
-		int x = 0, z = 0, dx = 0, dy = -1;
-		int t = Math.max(height, width);
-		int maxI = t * t;
+	private static void generateChunk(int x, int z, int dimensionID) {
 
-		if (Reference.toGenerate == null) {
-			Reference.toGenerate = new LinkedList<ChunkPosition>();
+		ChunkProviderServer cps = MinecraftServer.getServer().worldServerForDimension(dimensionID).theChunkProviderServer;
+
+		if(!chunksExist(x, z, dimensionID)) {
+
+			// Queue the desired chunk to be loaded
+			ChunkIOExecutor.queueChunkLoad(DimensionManager.getWorld(dimensionID), (AnvilChunkLoader)cps.chunkLoader, cps, x, z, new Utilities());
+			doneLoading = false;
+
+			if(Reference.verbose)
+				Reference.logger.info("Chunk created at x=" + x + " and z=" + z);
 		}
+	}
 
-		for (int i = 0; i < maxI; i++) {
-			if ((-width / 2 <= x) && (x <= width / 2) && (-height / 2 <= z) && (z <= height / 2)) {
-				if (skipChunks > 0) {
-					skipChunks--;
-				} else {
-					Reference.toGenerate.add(new ChunkPosition(x + x0, z + z0, dimensionID, icommandsender));
-				}
-			}
+	public static void unloadChunks(int dimensionID) {
+                ChunkProviderServer cps = MinecraftServer.getServer().worldServerForDimension(dimensionID).theChunkProviderServer;
 
-			if ((x == z) || ((x < 0) && (x == -z)) || ((x > 0) && (x == 1 - z))) {
-				t = dx;
-				dx = -dy;
-				dy = t;
-			}
-			x += dx;
-			z += dy;
-		}
+		// Mark all chunks for unloading
+		cps.unloadAllChunks();
+                // Unload all chunks that are marked to be unloaded
+                cps.unloadQueuedChunks();
 
-		Reference.startingSize = Reference.toGenerate.size();
+		cps.saveChunks(true, null);
+
+                Reference.logger.info("Unloading chunks. Chunk loaded : " + cps.getLoadedChunkCount());
 	}
 }

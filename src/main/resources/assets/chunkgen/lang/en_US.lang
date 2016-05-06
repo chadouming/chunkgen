@@ -1,5 +1,11 @@
-#Command Response
-commands.successful=Chunk Generation Completed!
-commands.failed=Chunk Generation Failed!
+# Command responses
+commands.successful=Chunk generation completed!
+commands.failed=Chunk generation failed!
 commands.numberFormatException=One of the passed arguments wasn't a number!
-commands.stopped=Chunk Generation Stopped
+commands.stopped=Chunk generation stopped
+commands.paused=Chunk generation paused
+commands.started=Starting to generate chunks
+commands.dataok=Informations entered are ok. Run chunkgen start to begin generating.
+
+# Errors informations
+errors.nodata=Please add some configuration first. run chunkgen <x offset> <z offset> <width> <height> <dimension>
